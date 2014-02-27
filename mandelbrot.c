@@ -83,6 +83,7 @@ int main(int argc, char *argv[])
             percent++;
             n = mandelbrot(ar,ai);
 //            n = julia(ar,ai, 0.4, 0.188);
+//
             fprintf(fout, "%f %f %d\n", ar, ai, n);
         }
         fprintf(fout, "\n");
