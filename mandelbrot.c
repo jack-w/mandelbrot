@@ -34,9 +34,8 @@ int mandelbrot(double ar, double ai)
 
     while(counter<maxcount){
         tmpr = zr;
-        tmpi = zi;
-        zr = tmpr*tmpr - tmpi*tmpi + ar;
-        zi = 2*tmpr*tmpi + ai;
+        zr = (tmpr + zi)*(tmpr - zi) + ar;
+        zi = 2*tmpr*zi + ai;
         counter++;
         if( zr*zr + zi*zi > threshhold) break;
     }
@@ -53,9 +52,8 @@ int julia(double ar, double ai, double cr, double ci)
 
     while(counter<maxcount){
         tmpr = zr;
-        tmpi = zi;
-        zr = tmpr*tmpr - tmpi*tmpi + cr;
-        zi = 2*tmpr*tmpi + ci;
+        zr = (tmpr + zi)*(tmpr - zi) + cr;
+        zi = 2*tmpr*zi + ci;
         counter++;
         if( zr*zr + zi*zi > threshhold) break;
     }
