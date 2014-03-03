@@ -85,7 +85,7 @@ $(document).ready(function(){
             il += (tiu-til)*(mouseZoom.y0/cheight);
             iu -= (tiu-til)*(1-mouseZoom.y/cheight);
             mouseZoom.zoom = mouseZoom.origSize / ((ru-rl)*(iu-il));
-            $('#iter').val(Math.floor(2*Math.log(mouseZoom.zoom)+10));
+            $('#iter').val(Math.floor(10*Math.log(mouseZoom.zoom)+30));
             iterations = $('#iter').val();
             c.clearRect(0,0,cwidth, cheight);
             fractalMap = getFractal(cwidth, cheight,rl,ru,il,iu);
