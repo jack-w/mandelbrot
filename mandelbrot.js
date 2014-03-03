@@ -5,6 +5,7 @@ $(document).ready(function(){
     var cheight;
     var id;
     var d;
+    var iterations = 1000;
 
 
     cwidth = canvas.width;
@@ -15,8 +16,7 @@ $(document).ready(function(){
 //    var col = 1000;
 //    c.fillStyle = "hsl("+col+", 100%,50%)";
 //    c.fill();
-    function mandelbrot(ar, ai) {
-        var maxcount = 30;
+    function mandelbrot(ar, ai, maxcount) {
         var threshhold = 4;
         var zr = ar;
         var zi = ai;
@@ -56,7 +56,7 @@ $(document).ready(function(){
             i = il + (idiff*y)/height;
             for (var x = 0; x < width; x++){
                 r = rl + (rdiff*x)/width;
-                fractalMap[x+y*width] = mandelbrot(r,i);
+                fractalMap[x+y*width] = mandelbrot(r,i, iterations);
             }
         }
         return fractalMap;
@@ -99,7 +99,7 @@ $(document).ready(function(){
 //        setPixel(id,i,10,[i%255, 200,0,250]);
 //    }
     fractalMap = getFractal(cwidth, cheight,-2,1,-1,1);
-    colorMap = setColorMap(30);
+    colorMap = setColorMap(iterations);
 //    alert(colorMap[29][3]);
     drawFractal(c,fractalMap, colorMap,cwidth,cheight);
     
