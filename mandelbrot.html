@@ -4,10 +4,18 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
     <title>Mandelbrot set and other fractals</title>
-    
+    <link rel="stylesheet" href="mandelbrot.css" title="" type="text/css" />
 </head>
 <body>
-    <canvas id="canvas" width="400" height="300">
+    <div id="controlls">
+        <ul>
+            <li>Iterations: <input type="number" name="iterations" id="iter" value="30"/></li>
+            <li>iae<input type="button" name="redraw" id="redraw" value="Redraw" /></li>
+            <li></li>
+        </ul>
+        
+    </div>
+    <canvas id="canvas" width="300" height="200" >
         apparently your browser does not support canvas!
     </canvas>
     <noscript>
