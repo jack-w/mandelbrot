@@ -9,9 +9,29 @@
 <body>
     <div id="controlls">
         <ul>
-            <li>Iterations: <input type="number" name="iterations" id="iter" value="30"/></li>
-            <li>iae<input type="button" name="redraw" id="redraw" value="Redraw" /></li>
-            <li></li>
+            <li>Iterations: 
+                <span>auto<input type="radio" name="auto/man" id="auto" value="checked" checked /></span>
+                <span>manuel <input type="radio" name="auto/man" id="man" value="unckecked" /></span>
+                <input type="number" name="iterations" id="iter" value="30"/>
+            </li>
+            <li>
+                Fractal-type:
+                <select name="ftype" id="ftype">
+                    <option value="mandelbrot">Mandelbrot</option>
+                    <option value="nMandelbrot">n-Mandelbrot</option>
+                    <option value="julia">Julia</option>
+                    <option value="nJulia">n-Julia</option>
+                </select>
+                <div id="frac"> </div>
+            </li>
+            <li>
+                <input type="button" name="back" id="back" value="Back" />
+                <input type="button" name="forward" id="forward" value="Forward" />
+            </li>
+            <li>
+                <input type="button" name="reset" id="reset" value="Reset" />
+                <input type="button" name="redraw" id="redraw" value="Redraw" />
+            </li>
         </ul>
         
     </div>
