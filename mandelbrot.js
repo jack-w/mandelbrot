@@ -379,7 +379,7 @@ $(document).ready(function(){
         var fractalMap = new Array(width*height);
 
         history[counter] = {rl:rl,ru:ru,il:il,iu:iu,iter:iterations,zoom:mouse.zoom};
-        alert([rl,ru,il,iu]);
+        //alert([rl,ru,il,iu]);
 
         fType = $('#ftype').val();;
         if (fType == 'nMandelbrot') {
