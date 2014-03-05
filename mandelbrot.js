@@ -13,6 +13,7 @@ $(document).ready(function(){
     var counter = 0;
     var auto = true;
     var mouse = {x0:0, y0:0, x:100, y:100, dx:0, dy:0, down:false, zoom:1, origSize:(ru-rl)*(iu-il)};
+    var tmpMousePos;
     var functions = [];
     var n = 3;
     var jr = 0.4;
@@ -191,6 +192,20 @@ $(document).ready(function(){
             iterations = $('#iter').val();
         }
     }
+    function affineMap(x0,y0,x,y) {
+        var t1,t2;
+        var A11,A12,A21,A22;
+
+        t1 = rl;
+        t2 = iu;
+
+        A11 = (ru-t1)/cwidth;
+        A12 = (rl-t1)/cheight;
+        A21 = (iu-t2)/cwidth;
+        A22 = (il-t2)/cheight;
+
+        return [A11*x0 + A12*y0 + t1, A21*x0 + A22*y0 + t2, A11*x + A12*y + t1, A21*x + A22*y + t2];
+    }
     
     function doMouseOut(event) {
         mouse.down = false;
@@ -201,7 +216,7 @@ $(document).ready(function(){
         mouse.down = true;
         mouse.x0 = event.pageX-canvas.offsetLeft;
         mouse.y0 = event.pageY-canvas.offsetTop;
-//        alert([mouse.x0,mouse.y0]);
+//        alert(affineMap(mouse.x0,mouse.y0,0,0));
     }
     function doMouseUp(event) {
         var tmp;
@@ -244,11 +259,19 @@ $(document).ready(function(){
                 til = il;
                 tiu = iu;
 
-                rl += (tru-trl)*(mouse.x0/cwidth);
-                ru -= (tru-trl)*(1-mouse.x/cwidth);
-                il += (tiu-til)*(mouse.y0/cheight);
-                iu -= (tiu-til)*(1-mouse.y/cheight);
-                mouse.zoom = mouse.origSize / ((ru-rl)*(iu-il));
+                tmp = affineMap(mouse.x0,mouse.y0,mouse.x,mouse.y);
+                rl = tmp[0];
+                iu = tmp[1];
+                ru = tmp[2];
+                il = tmp[3];
+
+//                alert([rl,il,ru,iu]);
+
+//                rl += (tru-trl)*(mouse.x0/cwidth);
+//                ru -= (tru-trl)*(1-mouse.x/cwidth);
+//                il += (tiu-til)*(mouse.y0/cheight);
+//                iu -= (tiu-til)*(1-mouse.y/cheight);
+                mouse.zoom = mouse.origSize / Math.abs((ru-rl)*(iu-il));
                 readIterations();
                 c.clearRect(0,0,cwidth, cheight);
                 fractalMap = getFractal(cwidth, cheight,rl,ru,il,iu);
@@ -263,23 +286,27 @@ $(document).ready(function(){
         mouse.y = event.pageY-canvas.offsetTop;
         mouse.dx = (mouse.x-mouse.x0);
         mouse.dy = (mouse.y-mouse.y0);
+        tmpMousePos = affineMap(mouse.x,mouse.y,0,0);
+        $('#pos').text('Re:'+tmpMousePos[0].toFixed(7)+', Im:'+tmpMousePos[1].toFixed(7));
         if (mouse.down == true) {
             canvas.style.cursor="crosshair";
             c.clearRect(0,0,cwidth, cheight);
             drawFractal(c,fractalMap, colorMap,cwidth,cheight);
             c.beginPath();
             c.rect(mouse.x0, mouse.y0, mouse.dx, mouse.dy);
-            c.lineWidth = 0.5;
+            c.lineWidth = 0.3;
             c.strokeStyle = 'red';
             c.stroke();
         }
     }
+/******************************************************************/
+/**/                                                            /**/
     function mandelbrot(ar, ai, maxcount) {
         var threshhold = 4;
         var zr = ar;
         var zi = ai;
         var tmpr;
-        var i;
+        var i=0;
         for (i = 0; i < maxcount; i++) {
             tmpr = zr;
             zr = (zr + zi)*(zr - zi) + ar;
@@ -338,6 +365,8 @@ $(document).ready(function(){
         }
         return i;
     }
+/**/                                                            /**/
+/*****************************************************************/
     function raise(zr,zi,n) {
         var r = zr*zr + zi*zi;
         var p = Math.atan2(zi,zr);
@@ -356,11 +385,40 @@ $(document).ready(function(){
     }
     function setColorMap(max) {
         var map = new Array(max+1);
+        var pr=0.85, pg=0.9, pb=0.95;
+        var p;
         for (var i = 0; i < max; i++){
-           map[i] = [((max-i)/max)*255,((max-i)/max)*255,((max-i)/max)*255,255];
+//           map[i] = [((max-i)/max)*255,((max-i)/max)*255,((max-i)/max)*255,255];
+            if (i<pr*max) {
+              p = i/(pr*max);
+//              alert( interpolateColor(255,255,255,255, 255,0,0,255, p));
+                map[i] = interpolateColor(255,255,255,255, 255,0,0,255, p);
+            }
+            else if (i<pg*max) {
+                p = (i-pr*max)/(pg*max);
+                map[i] = interpolateColor(255,0,0,255, 0,255,0,255, p);
+            }
+            else if (i<pb*max) {
+                p = (i-pg*max)/(pb*max);
+                map[i] = interpolateColor(0,255,0,255, 0,0,255,255, p);
+            }
+            else {
+                p = (i-pb*max)/max;
+                map[i] = interpolateColor(0,0,255,255, 0,0,0,255, p);
+            }
+//            alert(map[i]);
         }
         map[max] = [0,0,0,255];
         return map;
+    }
+    function interpolateColor(r1,g1,b1,a1, r2,g2,b2,a2, p) {
+        var r,g,b,a;
+        r = Math.floor(p*r2 + (1-p)*r1);
+        g = Math.floor(p*g2 + (1-p)*g1);
+        b = Math.floor(p*b2 + (1-p)*b1);
+        a = Math.floor(p*a2 + (1-p)*a1);
+
+        return [r,g,b,a];
     }
     function setColorMap2(max) {
         var map = new Array(max+1);
@@ -371,7 +429,7 @@ $(document).ready(function(){
         return map;
     }
     function getFractal(width, height, rl,ru,il,iu) {
-        var r,i;
+        var r,i, x,y;
         var properRatio;
         var improperRatio;
         var rdiff = Math.abs(ru - rl);
@@ -407,27 +465,30 @@ $(document).ready(function(){
             ru += Math.abs(idiff/properRatio-rdiff)/2;
             rdiff = idiff / properRatio;
         }
-        for (var y = 0; y < height; y++){
-            i = il + (idiff*y)/height;
-            for (var x = 0; x < width; x++){
+        for (y = 0; y < height; y++){
+            $('#progress').text((100*y/height).toFixed(0)+"%");
+            i = iu - (idiff*y)/height;
+            for (x = 0; x < width; x++){
                 r = rl + (rdiff*x)/width;
                 fractalMap[x+y*width] = functions[fType](r,i, iterations);
             }
         }
+        //alert([x,r,y,i]);
         return fractalMap;
     }
     function drawFractal(c,fractalMap,colorMap,w,h) {
+        var x,y;
         var image = c.createImageData(w,h);
         var arr = new Array(4);
         var r,g,b,a;
-        for (var i = 0; i < h; i++) {
-            for (var j = 0; j < w; j++) {
-                arr = colorMap[fractalMap[j+i*w]];
+        for (y = 0; y < h; y++) {
+            for (x = 0; x < w; x++) {
+                arr = colorMap[fractalMap[x+y*w]];
                 r = arr[0];
                 g = arr[1];
                 b = arr[2];
                 a = arr[3];
-                setPixel(image,j,i,r,g,b,a);
+                setPixel(image,x,y,r,g,b,a);
             }
         }
         c.putImageData(image,0,0);

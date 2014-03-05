@@ -35,13 +35,19 @@
         </ul>
         
     </div>
-    <canvas id="canvas" width="600" height="500" >
-        apparently your browser does not support canvas!
-    </canvas>
-    <noscript>
-        enable javascript for this site to work!
-    </noscript>
-    <script src="jquery-1.8.2.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="mandelbrot.js" type="text/javascript" charset="utf-8"></script>
+    <div id="wrapper">
+        <canvas id="canvas" width="600" height="500" >
+            apparently your browser does not support canvas!
+        </canvas>
+        <noscript>
+            enable javascript for this site to work!
+        </noscript>
+        <script src="jquery-1.8.2.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mandelbrot.js" type="text/javascript" charset="utf-8"></script>
+        <div id="dial">
+            <span id="pos"></span>
+            <span id="progress">100%</span>
+        </div>
+    </div>
 </body>
 </html>
