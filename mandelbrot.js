@@ -332,8 +332,8 @@ $(document).ready(function(){
             c.stroke();
         }
     }
-/******************************************************************/
-/*                                                                */
+
+//-------iteration functions{{{
     function mandelbrot(ar, ai, maxcount) {
         var threshhold = 4;
         var zr = ar;
@@ -446,8 +446,8 @@ $(document).ready(function(){
             abs = z[0]*z[0] + z[1]*z[1];
         return [i,abs];
     }
-/*                                                               */
-/*****************************************************************/
+//}}}
+
     function raise(zr,zi,n) {
         var r = zr*zr + zi*zi;
         var p = Math.atan2(zi,zr);
@@ -464,7 +464,9 @@ $(document).ready(function(){
         imageData.data[index+2] = rgba[2];
         imageData.data[index+3] = rgba[3];
     }
-    var logbase = Math.log(2);
+
+//----- greyScales and colors {{{ 
+//
     function mSetGrey(it_zAbs) {
         var count = it_zAbs[0] + 4 - Math.log(Math.log(it_zAbs[1]))/Math.log(2);
 
@@ -477,6 +479,7 @@ $(document).ready(function(){
         }
         return [count,count,count,255];
     }
+
     function jSetGrey(it_zAbs) {
         var count = it_zAbs[0] + 4 - Math.log(Math.log(it_zAbs[1]))/Math.log(2);
 
@@ -489,6 +492,7 @@ $(document).ready(function(){
         }
         return [count,count,count,255];
     }
+
     function nMSetGrey(it_zAbs) {
         var count = it_zAbs[0] + 4 - Math.log(Math.log(it_zAbs[1]))/Math.log(2);
 
@@ -501,6 +505,7 @@ $(document).ready(function(){
         }
         return [count,count,count,255];
     }
+
     function nJSetGrey(it_zAbs) {
         var count = it_zAbs[0] + 4 - Math.log(Math.log(it_zAbs[1]))/Math.log(2);
 
@@ -512,6 +517,48 @@ $(document).ready(function(){
             count = 255;
         }
         return [count,count,count,255];
+    }
+
+    var c1=[255,0,0],c2=[0,255,0],c3=[0,0,255];
+    var p1=0.0, p2=0.1, p3=1;
+    mSetColor([5,5],c1,p1,c2,p2,c3,p3);
+    function mSetColor(it_zAbs, c1,p1, c2,p2, c3,p3) {
+        var i,j;
+        var tmp;
+        var lower;
+        var range;
+        var cp = [[c1,p1], [c2,p2], [c3,p3]];
+        var count = it_zAbs[0] + 2 - Math.log(Math.log(it_zAbs[1]))/Math.log(2);
+        var l = cp.length;
+        var p = count/iterations;
+
+        if (it_zAbs[1] == iterations) {
+            return [0,0,0,255];
+        }
+        if (Math.abs(p-1) < 0.001 || p > 1) {
+            return [cp[l-1][0][0],cp[l-1][0][1],cp[l-1][0][2],255];
+        }
+        if (Math.abs(p) < 0.001) {
+            return [cp[0][0][0],cp[0][0][1],cp[0][0][2],255];
+        }
+
+        for (i=0; i < l; i++) {
+            for (j=i; j < l; j++) {
+                if (cp[j][1] < cp[i][1]) {
+                    tmp = cp[j];
+                    cp[j] = cp[i];
+                    cp[i] = tmp;
+                }
+            }
+        }
+
+        lower = 0;
+        for (i=0; i < l; i++) {
+            if (cp[i][1] > p) {
+                break;
+            }
+        }
+        alert([p,i]);
     }
 
     function hsv_to_rgb(h, s, v) {
@@ -538,6 +585,7 @@ $(document).ready(function(){
         rgb[2] *= 255;
         return rgb;
     }
+
     function interpolateColor(r1,g1,b1,a1, r2,g2,b2,a2, p) {
         var r,g,b,a;
         r = Math.floor(p*r2 + (1-p)*r1);
@@ -547,6 +595,8 @@ $(document).ready(function(){
 
         return [r,g,b,a];
     }
+//}}}
+
     function getFractal(width, height, rl,ru,il,iu) {
         var r,i, x,y;
         var properRatio;
