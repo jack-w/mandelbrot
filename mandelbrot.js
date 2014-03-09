@@ -14,13 +14,23 @@ $(document).ready(function(){
     var auto = true;
     var mouse = {x0:0, y0:0, x:100, y:100, dx:0, dy:0, down:false, zoom:1, origSize:(ru-rl)};
     var tmpMousePos;
+    var fractalMap;
     var functions = [];
     var colors = [];
-    var n = 3;
+    var n = 2;
     var jr = 0.4;
     var ji = 0.18;
     var fType = "mandelbrot";
     var cType = "mSetGrey"
+    var c1=[0,0,0],p1=0;
+    var c2=[100,0,0],p2=0.1;
+    var c3=[255,0,0],p3=0.3;
+    var c4=[100,50,0],p4=0.5;
+    var c5=[200,250,0],p5=0.9;
+    var c6=[200,0,0],p6=1;
+    var cI=[0,0,0];
+    var cp;
+
 
     functions["mandelbrot"] = mandelbrot;
     functions["nMandelbrot"] = nMandelbrot;
@@ -31,6 +41,7 @@ $(document).ready(function(){
     colors["nMSetGrey"] = nMSetGrey;
     colors["jSetGrey"] = jSetGrey;
     colors["nJSetGrey"] = nJSetGrey;
+    colors["setColor"] = setColor;
 
     cwidth = canvas.width;
     cheight = canvas.height;
@@ -51,7 +62,54 @@ $(document).ready(function(){
 //    var col = 1000;
 //    c.fillStyle = "hsl("+col+", 100%,50%)";
 //    c.fill();
+// change colors{{{
+    $('#cI').change(function(){
+        getColors();
+        drawFractal(c,fractalMap,cwidth,cheight);
+    });
+    $('#c1').change(function(){
+        getColors();
+        drawFractal(c,fractalMap,cwidth,cheight);
+    });
+    $('#c2').change(function(){
+        getColors();
+        drawFractal(c,fractalMap,cwidth,cheight);
+    });
+    $('#c3').change(function(){
+        getColors();
+        drawFractal(c,fractalMap,cwidth,cheight);
+    });
+    $('#c4').change(function(){
+        getColors();
+        drawFractal(c,fractalMap,cwidth,cheight);
+    });
+    $('#c5').change(function(){
+        getColors();
+        drawFractal(c,fractalMap,cwidth,cheight);
+    });
+    $('#c6').change(function(){
+        getColors();
+        drawFractal(c,fractalMap,cwidth,cheight);
+    });
+    $('#p2').change(function(){
+        getColors();
+        drawFractal(c,fractalMap,cwidth,cheight);
+    });
+    $('#p3').change(function(){
+        getColors();
+        drawFractal(c,fractalMap,cwidth,cheight);
+    });
+    $('#p4').change(function(){
+        getColors();
+        drawFractal(c,fractalMap,cwidth,cheight);
+    });
+    $('#p5').change(function(){
+        getColors();
+        drawFractal(c,fractalMap,cwidth,cheight);
+    });
+//}}}
     $('#redraw').click(function(){
+        getColors();
         readIterations();
         c.clearRect(0,0,cwidth, cheight);
         fractalMap = getFractal(cwidth, cheight,rl,ru,il,iu);
@@ -101,22 +159,30 @@ $(document).ready(function(){
     });
     
    
-    $('#ftype').click(function(){
+    $('#ftype').change(function(){
         fType = $('#ftype').val();
         var str = ''
         $('#frac').empty();
         counter = 0;
         if (fType == 'mandelbrot') {
-            cType = 'mSetGrey';
+            n = 2;
+            if (cType != 'setColor') {
+                cType = 'mSetGrey';
+            }
         }
         if (fType == 'nMandelbrot') {
-            cType = 'nMSetGrey';
+            if (cType != 'setColor') {
+                cType = 'nMSetGrey';
+            }
             str += 'n: ';
-            str += '<input type="number" id="expon" value="3"/>'
+            str += '<input type="number" id="expon" min="2" value="3"/>'
             $('#frac').append(str);
         }
         if (fType == 'julia') {
-            cType = 'jSetGrey';
+            n = 2;
+            if (cType != 'setColor') {
+                cType = 'jSetGrey';
+            }
             str += 'Re(j): ';
             str += '<input type="number" id="jr" value="-0.7"/>';
             str += 'Im(j): ';
@@ -124,9 +190,11 @@ $(document).ready(function(){
             $('#frac').append(str);
         }
         if (fType == 'nJulia') {
-            cType = 'nJSetGrey';
+            if (cType != 'setColor') {
+                cType = 'nJSetGrey';
+            }
             str += 'n: ';
-            str += '<input type="number" id="expon" value="3"/>';
+            str += '<input type="number" id="expon" min="2" value="3"/>';
             str += 'Re(j): ';
             str += '<input type="number" id="jr" value="-0.6"/>';
             str += 'Im(j): ';
@@ -137,19 +205,116 @@ $(document).ready(function(){
 //        $('<ul><li> iuanert </li> </ul>').appendTo('#frac');
     
     });
+    $('#color').click(function(){
+        cType = "setColor";
+        getColors();
+        c.clearRect(0,0,cwidth, cheight);
+        drawFractal(c,fractalMap, cwidth,cheight);
+    });
+    $('#grey').click(function(){
+        if (fType == "mandelbrot") {
+            cType = "mSetGrey";
+        }
+        if (fType == "nMandelbrot") {
+            cType = "nMSetGrey";
+        }
+        if (fType == "nJulia") {
+            cType = "nJSetGrey";
+        }
+        if (fType == "julia") {
+            cType = "jSetGrey";
+        }
+        c.clearRect(0,0,cwidth, cheight);
+        drawFractal(c,fractalMap, cwidth,cheight);
+    });
+
     $('#iter').click(function(){
         $('#man').attr("checked", "checked");
         auto = false;
     });
     
-   function reset(){
+    function getColors( ) {
+        var lamda = 0.5;
+        var hex = $('#cI').val();
+        var r,g,b;
+        r = hex[0]+hex[1]+"";
+        g = hex[2]+hex[3]+"";
+        b = hex[4]+hex[5]+"";
+        r = parseInt(r,16);
+        g = parseInt(g,16);
+        b = parseInt(b,16);
+        cI = [r,g,b];
+
+        hex = $('#c1').val();
+        r = hex[0]+hex[1]+"";
+        g = hex[2]+hex[3]+"";
+        b = hex[4]+hex[5]+"";
+        r = parseInt(r,16);
+        g = parseInt(g,16);
+        b = parseInt(b,16);
+        c1 = [r,g,b];
+
+        hex = $('#c2').val();
+        r = hex[0]+hex[1]+"";
+        g = hex[2]+hex[3]+"";
+        b = hex[4]+hex[5]+"";
+        r = parseInt(r,16);
+        g = parseInt(g,16);
+        b = parseInt(b,16);
+        c2 = [r,g,b];
+
+        hex = $('#c3').val();
+        r = hex[0]+hex[1]+"";
+        g = hex[2]+hex[3]+"";
+        b = hex[4]+hex[5]+"";
+        r = parseInt(r,16);
+        g = parseInt(g,16);
+        b = parseInt(b,16);
+        c3 = [r,g,b];
+
+        hex = $('#c4').val();
+        r = hex[0]+hex[1]+"";
+        g = hex[2]+hex[3]+"";
+        b = hex[4]+hex[5]+"";
+        r = parseInt(r,16);
+        g = parseInt(g,16);
+        b = parseInt(b,16);
+        c4 = [r,g,b];
+
+        hex = $('#c5').val();
+        r = hex[0]+hex[1]+"";
+        g = hex[2]+hex[3]+"";
+        b = hex[4]+hex[5]+"";
+        r = parseInt(r,16);
+        g = parseInt(g,16);
+        b = parseInt(b,16);
+        c5 = [r,g,b];
+
+        hex = $('#c6').val();
+        r = hex[0]+hex[1]+"";
+        g = hex[2]+hex[3]+"";
+        b = hex[4]+hex[5]+"";
+        r = parseInt(r,16);
+        g = parseInt(g,16);
+        b = parseInt(b,16);
+        c6 = [r,g,b];
+
+        p2 = 1 - Math.exp(-lamda*$('#p2').val());
+        p3 = 1 - Math.exp(-lamda*$('#p3').val());
+        p4 = 1 - Math.exp(-lamda*$('#p4').val());
+        p5 = 1 - Math.exp(-lamda*$('#p5').val());
+
+        initColors();
+    }
+    function reset(){
+        getColors();
         mouse.zoom = 1;
         counter = 0;
         if (fType == 'mandelbrot') {
             rl = -1.5;
             ru = 0.5;
-            il = -1;
-            iu = 1;
+            il = -1.5;
+            iu = 1.5;
         }
         if (fType == 'nMandelbrot') {
             rl = -1.5;
@@ -519,28 +684,44 @@ $(document).ready(function(){
         return [count,count,count,255];
     }
 
-    var c1=[255,0,0],c2=[0,255,0],c3=[0,0,255];
-    var p1=0.0, p2=0.1, p3=1;
-    mSetColor([5,5],c1,p1,c2,p2,c3,p3);
-    function mSetColor(it_zAbs, c1,p1, c2,p2, c3,p3) {
-        var i,j;
+//    alert(mSetColor([50,1]));
+    function setColor(it_zAbs) {
+        var i;
+        var eps=0.00001;
         var tmp;
-        var lower;
-        var range;
-        var cp = [[c1,p1], [c2,p2], [c3,p3]];
-        var count = it_zAbs[0] + 2 - Math.log(Math.log(it_zAbs[1]))/Math.log(2);
+        var count = it_zAbs[0] + 5 - Math.log(Math.log(it_zAbs[1])+1)/Math.log(n);
         var l = cp.length;
         var p = count/iterations;
 
-        if (it_zAbs[1] == iterations) {
-            return [0,0,0,255];
+        if (it_zAbs[0] == iterations || p > 1 || p < 0) {
+            tmp = cI;
+            cI[3] = 255;
+            return cI;
         }
-        if (Math.abs(p-1) < 0.001 || p > 1) {
+        if (Math.abs(p-1) < eps || p > 1) {
             return [cp[l-1][0][0],cp[l-1][0][1],cp[l-1][0][2],255];
         }
-        if (Math.abs(p) < 0.001) {
+        if (Math.abs(p) < eps) {
             return [cp[0][0][0],cp[0][0][1],cp[0][0][2],255];
         }
+
+
+        for (i=0; i < l; i++) {
+            if (cp[i][1] > p) {
+                break;
+            }
+        }
+//        if (i > l-1 || p < 0) {alert([i,p,it_zAbs[0],it_zAbs[1],count])}
+//        alert([it_zAbs[1],count]);
+//        {alert([p,cp[i][1]])};
+        p = (p - cp[i-1][1]) / (cp[i][1] - cp[i-1][1]);
+//        alert([i,p,range]);
+        return interpolateColor(cp[i-1][0],cp[i][0], p);
+    }
+
+    function initColors( ) {
+        cp = [[c1,p1], [c2,p2], [c3,p3], [c4,p4],[c5,p5],[c6,p6]];
+        var l = cp.length, i,j, tmp;
 
         for (i=0; i < l; i++) {
             for (j=i; j < l; j++) {
@@ -551,14 +732,7 @@ $(document).ready(function(){
                 }
             }
         }
-
-        lower = 0;
-        for (i=0; i < l; i++) {
-            if (cp[i][1] > p) {
-                break;
-            }
-        }
-        alert([p,i]);
+        
     }
 
     function hsv_to_rgb(h, s, v) {
@@ -586,14 +760,13 @@ $(document).ready(function(){
         return rgb;
     }
 
-    function interpolateColor(r1,g1,b1,a1, r2,g2,b2,a2, p) {
-        var r,g,b,a;
-        r = Math.floor(p*r2 + (1-p)*r1);
-        g = Math.floor(p*g2 + (1-p)*g1);
-        b = Math.floor(p*b2 + (1-p)*b1);
-        a = Math.floor(p*a2 + (1-p)*a1);
+    function interpolateColor(rgb1, rgb2, p) {
+        var r,g,b;
+        r = Math.floor(p*rgb2[0] + (1-p)*rgb1[0]);
+        g = Math.floor(p*rgb2[1] + (1-p)*rgb1[1]);
+        b = Math.floor(p*rgb2[2] + (1-p)*rgb1[2]);
 
-        return [r,g,b,a];
+        return [r,g,b,255];
     }
 //}}}
 
@@ -647,12 +820,29 @@ $(document).ready(function(){
     }
     function drawFractal(c,fractalMap,w,h) {
         var x,y;
+//        var max1,min1, max2,min2;
         image = c.createImageData(w,h);
         var arr = new Array(4);
         var r,g,b,a;
         var rgba;
+//        min1 = fractalMap[0][0];
+//        max1 = fractalMap[0][0];
+//        min2 = fractalMap[0][1];
+//        max2 = fractalMap[0][1];
         for (y = 0; y < h; y++) {
             for (x = 0; x < w; x++) {
+//                if (fractalMap[x+y*w][0] < min1) {
+//                    min1 = fractalMap[x+y*w][0];
+//                }
+//                if (fractalMap[x+y*w][0] > max1) {
+//                    max1 = fractalMap[x+y*w][0];
+//                }
+//                if (fractalMap[x+y*w][1] < min2) {
+//                    min2 = fractalMap[x+y*w][1];
+//                }
+//                if (fractalMap[x+y*w][1] > max2) {
+//                    max2 = fractalMap[x+y*w][1];
+//                }
 //                arr = colorMap[fractalMap[x+y*w]];
 //                r = arr[0];
 //                g = arr[1];
@@ -662,6 +852,7 @@ $(document).ready(function(){
                 setPixel(image,x,y,arr);
             }
         }
+//        alert([min1,max1,min2,max2]);
         c.putImageData(image,0,0);
     }
 //    id = c.createImageData(cwidth,cheight);

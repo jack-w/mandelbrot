@@ -5,6 +5,9 @@
 
     <title>Mandelbrot set and other fractals</title>
     <link rel="stylesheet" href="mandelbrot.css" title="" type="text/css" />
+    <script src="jquery-1.11.0.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mandelbrot.js" type="text/javascript" charset="utf-8"></script>
+    <script src="jscolor/jscolor.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
     <div id="controlls">
@@ -33,6 +36,39 @@
                 <input type="button" name="redraw" id="redraw" value="Redraw" />
             </li>
         </ul>
+        <ul>
+            <li>
+                <input type="radio" name="grey/color" id="grey" checked />
+                <span>greyscale</span>
+                <input type="radio" name="grey/color" id="color" />
+                <span>color</span>
+            </li>
+            <li>
+                <input id="cI" class="color" value="000000"/>
+            </li>
+            <li>
+                <input id="c1" class="color" value="000000"/>
+            </li>
+            <li>
+                <input id="c2" class="color" value="990000"/>
+                <input id="p2" type="range" min="0" max="1" step="0.001" value="0.1"/>
+            </li>
+            <li>
+                <input id="c3" class="color" value="ccaa00"/>
+                <input id="p3" type="range" min="0" max="1" step="0.001" value="0.3"/>
+            </li>
+            <li>
+                <input id="c4" class="color" value="cccc00"/>
+                <input id="p4" type="range" min="0" max="1" step="0.001" value="0.5"/>
+            </li>
+            <li>
+                <input id="c5" class="color" value="eebb00"/>
+                <input id="p5" type="range" min="0" max="1" step="0.001" value="0.7"/>
+            </li>
+            <li>
+                <input id="c6" class="color" value="ee9900"/>
+            </li>
+        </ul>
         
     </div>
     <div id="wrapper">
@@ -42,8 +78,6 @@
         <noscript>
             enable javascript for this site to work!
         </noscript>
-        <script src="jquery-1.8.2.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mandelbrot.js" type="text/javascript" charset="utf-8"></script>
         <div id="dial">
             <span id="pos"></span>
             <span id="progress">100%</span>
