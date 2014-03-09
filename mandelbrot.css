@@ -1,8 +1,33 @@
 #canvas {
+    vertical-align: center;
     margin-left: 0;
-    padding: 0;
-    background-color: #555;
+    box-shadow: 0 0 1em rgba(200,255,255,1);
+    border-radius: 0.5em 0.5em 0.5em 0.5em;
+}
+#dial {
+    vertical-align: top;
+    display: inline-block;
+    padding: 1em;
+    background-color: rgba(200,255,255,1); 
+    border-radius: 0.5em;
+    
+}
+#dial ul {
+    display: inline-block;
+
 }
 #wrapper {
-    padding: 5em;
+    background-color: rgba(0,0,150,1);
+    padding: 3em;
+    border-radius: 0.5em;
+}
+
+.controlls {
+    list-stype-type: none;
+    vertical-align: top;
+    display: inline-block;
+    padding: 3em;
+    background-color: rgba(200,255,255,1); 
+    border-radius: 0.5em;
+
 }

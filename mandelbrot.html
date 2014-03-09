@@ -11,11 +11,11 @@
 </head>
 <body>
     <div id="controlls">
-        <ul>
+        <ul class="controlls">
             <li>Iterations: 
                 <span><input type="radio" name="auto/man" id="auto" value="checked" checked />auto</span>
                 <span> <input type="radio" name="auto/man" id="man" value="unckecked" />manuel</span>
-                <input type="number" name="iterations" id="iter" value="30"/>
+                <input type="number" name="iterations" id="iter" min="5" value="30"/>
             </li>
             <li>
                 Fractal-type:
@@ -28,6 +28,7 @@
                 <div id="frac"> </div>
             </li>
             <li>
+                <span>zoom:</span>
                 <input type="button" name="back" id="back" value="Back" />
                 <input type="button" name="forward" id="forward" value="Forward" />
             </li>
@@ -35,8 +36,13 @@
                 <input type="button" name="reset" id="reset" value="Reset" />
                 <input type="button" name="redraw" id="redraw" value="Redraw" />
             </li>
+            <li>
+                <span>size:</span>
+                <input type=number" id="width" min="1" value="600" />
+                <input type=number" id="height" min="1" value="500" />
+            </li>
         </ul>
-        <ul>
+        <ul class="controlls">
             <li>
                 <input type="radio" name="grey/color" id="grey" checked />
                 <span>greyscale</span>
@@ -50,23 +56,23 @@
                 <input id="c1" class="color" value="000000"/>
             </li>
             <li>
-                <input id="c2" class="color" value="990000"/>
-                <input id="p2" type="range" min="0" max="1" step="0.001" value="0.1"/>
+                <input id="c2" class="color" value="C20000"/>
+                <input id="p2" type="range" min="0" max="1" step="0.001" value="0.2"/>
             </li>
             <li>
-                <input id="c3" class="color" value="ccaa00"/>
-                <input id="p3" type="range" min="0" max="1" step="0.001" value="0.3"/>
+                <input id="c3" class="color" value="F07000"/>
+                <input id="p3" type="range" min="0" max="1" step="0.001" value="0.8"/>
             </li>
             <li>
-                <input id="c4" class="color" value="cccc00"/>
-                <input id="p4" type="range" min="0" max="1" step="0.001" value="0.5"/>
+                <input id="c4" class="color" value="F0C905"/>
+                <input id="p4" type="range" min="0" max="1" step="0.001" value="0.4"/>
             </li>
             <li>
-                <input id="c5" class="color" value="eebb00"/>
-                <input id="p5" type="range" min="0" max="1" step="0.001" value="0.7"/>
+                <input id="c5" class="color" value="FFC800"/>
+                <input id="p5" type="range" min="0" max="1" step="0.001" value="0.6"/>
             </li>
             <li>
-                <input id="c6" class="color" value="ee9900"/>
+                <input id="c6" class="color" value="FFF700"/>
             </li>
         </ul>
         
@@ -79,9 +85,10 @@
             enable javascript for this site to work!
         </noscript>
         <div id="dial">
-            <span id="pos"></span>
-            <span id="progress">100%</span>
-            <span id="zoom"></span>
+            <ul>
+                <li id="zoom"></li>
+            </ul>
+            <ul id="pos"></ul>
         </div>
     </div>
 </body>

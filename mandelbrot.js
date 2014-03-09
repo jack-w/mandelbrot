@@ -68,42 +68,52 @@ $(document).ready(function(){
         drawFractal(c,fractalMap,cwidth,cheight);
     });
     $('#c1').change(function(){
+        $('#color').attr("checked","checked");
         getColors();
         drawFractal(c,fractalMap,cwidth,cheight);
     });
     $('#c2').change(function(){
+        $('#color').attr("checked","checked");
         getColors();
         drawFractal(c,fractalMap,cwidth,cheight);
     });
     $('#c3').change(function(){
+        $('#color').attr("checked","checked");
         getColors();
         drawFractal(c,fractalMap,cwidth,cheight);
     });
     $('#c4').change(function(){
+        $('#color').attr("checked","checked");
         getColors();
         drawFractal(c,fractalMap,cwidth,cheight);
     });
     $('#c5').change(function(){
+        $('#color').attr("checked","checked");
         getColors();
         drawFractal(c,fractalMap,cwidth,cheight);
     });
     $('#c6').change(function(){
+        $('#color').attr("checked","checked");
         getColors();
         drawFractal(c,fractalMap,cwidth,cheight);
     });
     $('#p2').change(function(){
+        $('#color').attr("checked","checked");
         getColors();
         drawFractal(c,fractalMap,cwidth,cheight);
     });
     $('#p3').change(function(){
+        $('#color').attr("checked","checked");
         getColors();
         drawFractal(c,fractalMap,cwidth,cheight);
     });
     $('#p4').change(function(){
+        $('#color').attr("checked","checked");
         getColors();
         drawFractal(c,fractalMap,cwidth,cheight);
     });
     $('#p5').change(function(){
+        $('#color').attr("checked","checked");
         getColors();
         drawFractal(c,fractalMap,cwidth,cheight);
     });
@@ -184,9 +194,9 @@ $(document).ready(function(){
                 cType = 'jSetGrey';
             }
             str += 'Re(j): ';
-            str += '<input type="number" id="jr" value="-0.7"/>';
+            str += '<input type="number" id="jr" min="-2" max="2" step="0.1" value="-0.7"/>';
             str += 'Im(j): ';
-            str += '<input type="number" id="ji" value="0.2"/>';
+            str += '<input type="number" id="ji" min="-2" max="2" step="0.1" value="0.2"/>';
             $('#frac').append(str);
         }
         if (fType == 'nJulia') {
@@ -196,9 +206,9 @@ $(document).ready(function(){
             str += 'n: ';
             str += '<input type="number" id="expon" min="2" value="3"/>';
             str += 'Re(j): ';
-            str += '<input type="number" id="jr" value="-0.6"/>';
+            str += '<input type="number" id="jr" min="-2" max="2" step="0.1" value="-0.6"/>';
             str += 'Im(j): ';
-            str += '<input type="number" id="ji" value="0.6"/>';
+            str += '<input type="number" id="ji" min="-2" max="2" step="0.1" value="0.6"/>';
             $('#frac').append(str);
         }
         reset();
@@ -234,7 +244,10 @@ $(document).ready(function(){
     });
     
     function getColors( ) {
-        var lamda = 0.5;
+        if ($('#color:checked').length == 1) {
+           cType = 'setColor'; 
+        }
+        var lamda = 0.1;
         var hex = $('#cI').val();
         var r,g,b;
         r = hex[0]+hex[1]+"";
@@ -303,10 +316,21 @@ $(document).ready(function(){
         p3 = 1 - Math.exp(-lamda*$('#p3').val());
         p4 = 1 - Math.exp(-lamda*$('#p4').val());
         p5 = 1 - Math.exp(-lamda*$('#p5').val());
+//        p2 = $('#p2').val();
+//        p3 = $('#p3').val();
+//        p4 = $('#p4').val();
+//        p5 = $('#p5').val();
 
         initColors();
     }
+    function setCanvas( ) {
+        cwidth = $('#width').val();
+        cheight = $('#height').val();
+        canvas.width = cwidth;
+        canvas.height = cheight;
+    }
     function reset(){
+        setCanvas();
         getColors();
         mouse.zoom = 1;
         counter = 0;
@@ -364,23 +388,21 @@ $(document).ready(function(){
         var nd, d;
 
         if (Ratio > ratio) {
-            d = (iu-il);
-            nd = (iu-il)*cwidth/cheight;
-            ru += (nd-d)/2;
-            rl -= (nd-d)/2;
+            d = (Ratio*(iu-il)-ru+rl);
+            ru += d/2;
+            rl -= d/2;
         }
         else {
-            d = (ru-rl);
-            nd = (ru-rl)*cheight/cwidth;
-            iu += (nd-d)/2;
-            il -= (nd-d)/2;
+            d = ((ru-rl)/Ratio-iu+il);
+            iu += d/2;
+            il -= d/2;
         }
     }
     function readIterations() {
         if (auto == true) {
             iterations = Math.floor(27*Math.pow(mouse.zoom,0.34)+100);
             $('#iter').val(iterations);
-            $('#zoom').text('zoom: '+mouse.zoom);
+            $('#zoom').text('zoom: '+mouse.zoom.toFixed(0));
         }
         else {
             iterations = $('#iter').val();
@@ -391,6 +413,7 @@ $(document).ready(function(){
     function affineMap(x0,y0,x,y) {
         var t1,t2;
         var A11,A12,A21,A22;
+
 
         t1 = rl;
         t2 = iu;
@@ -484,7 +507,9 @@ $(document).ready(function(){
         mouse.dx = (mouse.x-mouse.x0);
         mouse.dy = (mouse.y-mouse.y0);
         tmpMousePos = affineMap(mouse.x,mouse.y,0,0);
-        $('#pos').text('Re:'+tmpMousePos[0].toFixed(7)+', Im:'+tmpMousePos[1].toFixed(7));
+//        $('#pos').text('Re:'+tmpMousePos[0].toFixed(7)+', Im:'+tmpMousePos[1].toFixed(7));
+        $('#pos').html('    <li>Re:'+tmpMousePos[0].toFixed(7)+'</li>\
+                            <li>Im:'+tmpMousePos[1].toFixed(7)+'</li>');
         if (mouse.down == true) {
             canvas.style.cursor="crosshair";
             c.clearRect(0,0,cwidth, cheight);
@@ -633,10 +658,10 @@ $(document).ready(function(){
 //----- greyScales and colors {{{ 
 //
     function mSetGrey(it_zAbs) {
-        var count = it_zAbs[0] + 4 - Math.log(Math.log(it_zAbs[1]))/Math.log(2);
+        var count = it_zAbs[0] + 5 - Math.log(Math.log(it_zAbs[1]))/Math.log(2);
 
         if (it_zAbs[0] == iterations) {
-            return [0,0,0,255];
+            return [cI[0],cI[1],cI[2],255];
         }
         count = Math.floor(2.0*256*Math.pow(count/iterations,1));
         if (count>255) {
@@ -646,7 +671,7 @@ $(document).ready(function(){
     }
 
     function jSetGrey(it_zAbs) {
-        var count = it_zAbs[0] + 4 - Math.log(Math.log(it_zAbs[1]))/Math.log(2);
+        var count = it_zAbs[0] + 5 - Math.log(Math.log(it_zAbs[1]))/Math.log(2);
 
         if (it_zAbs[0] == iterations) {
             return [0,0,0,255];
@@ -659,7 +684,7 @@ $(document).ready(function(){
     }
 
     function nMSetGrey(it_zAbs) {
-        var count = it_zAbs[0] + 4 - Math.log(Math.log(it_zAbs[1]))/Math.log(2);
+        var count = it_zAbs[0] + 5 - Math.log(Math.log(it_zAbs[1]))/Math.log(2);
 
         if (it_zAbs[0] == iterations) {
             return [0,0,0,255];
@@ -672,7 +697,7 @@ $(document).ready(function(){
     }
 
     function nJSetGrey(it_zAbs) {
-        var count = it_zAbs[0] + 4 - Math.log(Math.log(it_zAbs[1]))/Math.log(2);
+        var count = it_zAbs[0] + 5 - Math.log(Math.log(it_zAbs[1]))/Math.log(2);
 
         if (it_zAbs[0] == iterations) {
             return [0,0,0,255];
@@ -771,7 +796,7 @@ $(document).ready(function(){
 //}}}
 
     function getFractal(width, height, rl,ru,il,iu) {
-        var r,i, x,y;
+        var r,i, x=0,y=0;
         var properRatio;
         var improperRatio;
         var rdiff = Math.abs(ru - rl);
@@ -808,7 +833,7 @@ $(document).ready(function(){
             rdiff = idiff / properRatio;
         }
         for (y = 0; y < height; y++){
-            $('#progress').text((100*y/height).toFixed(0)+"%");
+//            $('#progress').text(''+(100*y/height).toFixed(0)+"%");
             i = iu - (idiff*y)/height;
             for (x = 0; x < width; x++){
                 r = rl + (rdiff*x)/width;
